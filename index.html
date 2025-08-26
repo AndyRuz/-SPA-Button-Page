@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nine Buttons - Single Page Application</title>
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --secondary: #64748b;
+      --background: #f8fafc;
+      --surface: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      --shadow-hover: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      background: var(--surface);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: var(--shadow-hover);
+      max-width: 800px;
+      width: 100%;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+
+    .header {
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 0 0 15px 0;
+      background: linear-gradient(135deg, var(--primary), #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    .buttons-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin: 40px 0;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .action-button {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 30px 20px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .action-button:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--primary);
+      background: linear-gradient(135deg, var(--primary), #8b5cf6);
+      color: white;
+    }
+
+    .action-button:active {
+      transform: translateY(-2px);
+    }
+
+    .action-button:focus {
+      outline: 3px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    .button-icon {
+      font-size: 2rem;
+      margin-bottom: 5px;
+    }
+
+    .button-label {
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    .result-area {
+      margin-top: 30px;
+      padding: 20px;
+      background: var(--background);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .result-message {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .result-message.show {
+      opacity: 1;
+    }
+
+    .footer {
+      margin-top: 30px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 30px 20px;
+        margin: 10px;
+      }
+
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      .buttons-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+
+      .action-button {
+        padding: 20px 15px;
+        min-height: 100px;
+        font-size: 1rem;
+      }
+
+      .button-icon {
+        font-size: 1.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .buttons-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .action-button {
+        min-height: 80px;
+      }
+    }
+
+    /* Accessibility */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Button hover animations */
+    .action-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .action-button:hover::before {
+      left: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>Nine Buttons SPA</h1>
+      <p class="subtitle">Single Page Application - Click any button to see it in action!</p>
+    </header>
+
+    <main>
+      <div class="buttons-grid" role="grid" aria-label="Interactive buttons grid">
+        <button class="action-button" data-action="home" aria-describedby="result-area">
+          <div class="button-icon" aria-hidden="true">🏠</div>
+          <div class="button-label">Home</div>
+        </button>
+        
+        <button class="action-button" data-action="profile" aria-describedby="result-area">
+          <div class="button-icon" aria-hidden="true">👤</div>
+          <div class="button-label">Profile</div>
+        </button>
+        
+        <button class="action-button" data-action="settings" aria-describedby="result-area">
+          <div class="button-icon" aria-hidden="true">⚙️</div>
+          <div class="button-label">Settings</div>
+        </button>
+        
+        <button class="action-button" data-action="messages" aria-describedby="result-area">
+          <div class="button-icon" aria-hidden="true">💬</div>
+          <div class="button-label">Messages</div>
+        </button>
+        
+        <button class="action-button" data-action="notifications" aria-describedby="result-area">
+          <div class="button-icon" aria-hidden="true">🔔</div>
+          <div class="button-label">Notifications</div>
+        </button>
+        
+        <button class="action-button" data-action="search" aria-describedby="result-area">
+          <div class="button-icon" aria-hidden="true">🔍</div>
+          <div class="button-label">Search</div>
+        </button>
+        
+        <button class="action-button" data-action="favorites" aria-describedby="result-area">
+          <div class="button-icon" aria-hidden="true">⭐</div>
+          <div class="button-label">Favorites</div>
+        </button>
+        
+        <button class="action-button" data-action="help" aria-describedby="result-area">
+          <div class="button-icon" aria-hidden="true">❓</div>
+          <div class="button-label">Help</div>
+        </button>
+        
+        <button class="action-button" data-action="logout" aria-describedby="result-area">
+          <div class="button-icon" aria-hidden="true">🚪</div>
+          <div class="button-label">Logout</div>
+        </button>
+      </div>
+
+      <div id="result-area" class="result-area" role="status" aria-live="polite">
+        <div id="result-message" class="result-message">
+          Hover over any button to see the highlight effect, then click to interact!
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>Built with HTML, CSS, and JavaScript | All interactions are client-side</p>
+      <p><a href="https://github.com/your-username/nine-buttons-spa" target="_blank">View Source Code</a></p>
+    </footer>
+  </div>
+
+  <script>
+    // Application state
+    let appState = {
+      lastClickedButton: null,
+      clickCount: 0,
+      interactions: {}
+    };
+
+    // Button interactions and responses
+    const buttonActions = {
+      home: {
+        message: "🏠 Welcome to the Home page! This is where your journey begins.",
+        color: "#10b981"
+      },
+      profile: {
+        message: "👤 Profile section opened. Manage your personal information here.",
+        color: "#3b82f6"
+      },
+      settings: {
+        message: "⚙️ Settings panel activated. Configure your preferences.",
+        color: "#8b5cf6"
+      },
+      messages: {
+        message: "💬 Messages center opened. You have 3 unread messages.",
+        color: "#f59e0b"
+      },
+      notifications: {
+        message: "🔔 Notification hub loaded. 5 new notifications available.",
+        color: "#ef4444"
+      },
+      search: {
+        message: "🔍 Search function ready. What would you like to find?",
+        color: "#06b6d4"
+      },
+      favorites: {
+        message: "⭐ Favorites collection displayed. You have 12 saved items.",
+        color: "#f97316"
+      },
+      help: {
+        message: "❓ Help center opened. How can we assist you today?",
+        color: "#84cc16"
+      },
+      logout: {
+        message: "🚪 Logout initiated. Thank you for using our application!",
+        color: "#6b7280"
+      }
+    };
+
+    // DOM elements
+    const resultMessage = document.getElementById('result-message');
+    const resultArea = document.getElementById('result-area');
+    const buttons = document.querySelectorAll('.action-button');
+
+    // Show initial message
+    setTimeout(() => {
+      resultMessage.classList.add('show');
+    }, 500);
+
+    // Button click handler
+    function handleButtonClick(button) {
+      const action = button.dataset.action;
+      const actionData = buttonActions[action];
+      
+      // Update state
+      appState.lastClickedButton = action;
+      appState.clickCount++;
+      appState.interactions[action] = (appState.interactions[action] || 0) + 1;
+
+      // Update result message
+      resultMessage.textContent = actionData.message;
+      resultArea.style.borderLeftColor = actionData.color;
+      resultArea.style.borderLeftWidth = '4px';
+      
+      // Add click animation
+      button.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        button.style.transform = '';
+      }, 150);
+
+      // Store interaction in localStorage
+      localStorage.setItem('nineButtonsApp', JSON.stringify(appState));
+
+      // Log interaction for demonstration
+      console.log(`Button "${action}" clicked. Total clicks: ${appState.clickCount}`);
+    }
+
+    // Add event listeners to all buttons
+    buttons.forEach(button => {
+      // Click event
+      button.addEventListener('click', () => {
+        handleButtonClick(button);
+      });
+
+      // Keyboard event for accessibility
+      button.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleButtonClick(button);
+        }
+      });
+
+      // Hover effects (additional to CSS)
+      button.addEventListener('mouseenter', () => {
+        const action = button.dataset.action;
+        const actionData = buttonActions[action];
+        
+        // Optional: Update result area color on hover
+        resultArea.style.borderColor = actionData.color;
+      });
+
+      button.addEventListener('mouseleave', () => {
+        // Reset border color
+        resultArea.style.borderColor = '#e2e8f0';
+      });
+    });
+
+    // Load previous state from localStorage
+    function loadAppState() {
+      const saved = localStorage.getItem('nineButtonsApp');
+      if (saved) {
+        try {
+          const parsedState = JSON.parse(saved);
+          appState = { ...appState, ...parsedState };
+          
+          // Show welcome back message if user has interacted before
+          if (appState.clickCount > 0) {
+            setTimeout(() => {
+              resultMessage.textContent = `Welcome back! You've made ${appState.clickCount} interactions so far.`;
+              resultMessage.classList.add('show');
+            }, 1000);
+          }
+        } catch (e) {
+          console.log('Could not load previous state');
+        }
+      }
+    }
+
+    // Initialize the application
+    function initApp() {
+      loadAppState();
+      
+      // Add loading animation
+      buttons.forEach((button, index) => {
+        button.style.animationDelay = `${index * 0.1}s`;
+        button.style.animation = 'fadeInUp 0.6s ease forwards';
+      });
+    }
+
+    // Add fade in animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      .action-button {
+        opacity: 0;
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Start the application
+    document.addEventListener('DOMContentLoaded', initApp);
+
+    // Save state before page unload
+    window.addEventListener('beforeunload', () => {
+      localStorage.setItem('nineButtonsApp', JSON.stringify(appState));
+    });
+  </script>
+</body>
+</html>
