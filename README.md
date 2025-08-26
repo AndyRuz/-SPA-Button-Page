@@ -13,4 +13,4 @@ A single-page web app that is a page consisting of random interactive buttons bu
 
 
 ### Getting Started:
-https://andyruz.github.io/MemoryCards/
+https://andyruz.github.io/-SPA-Button-Page/
